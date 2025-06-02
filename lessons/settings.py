@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -84,9 +85,9 @@ WSGI_APPLICATION = 'lessons.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': BASE_DIR / 'db_lessons',
+        'NAME': 'db_lessons', # BASE_DIR / 'db_lessons',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': '22032000',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -127,7 +128,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = [      # Папки, где Django ищет статику (кроме static/ внутри приложений)
+    BASE_DIR / "static",  # Глобальная папка static в корне проекта
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
