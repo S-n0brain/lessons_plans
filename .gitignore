@@ -1,0 +1,39 @@
+.
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# VS Code / PyCharm
+.idea/
+.vscode/
+
+# Django stuff
+db.sqlite3
+media/
+staticfiles/
+*.log
+
+# System
+.DS_Store
+Thumbs.db
+
+# Migrations (если не хочешь коммитить их сразу)
+**/migrations/*.pyc
+**/migrations/__pycache__/
+# Если хочешь игнорировать миграции целиком:
+# **/migrations/
+
+# pip
+requirements.txt~
+
+# OS
+*.swp
+*.swo
