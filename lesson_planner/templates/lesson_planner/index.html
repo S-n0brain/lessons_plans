@@ -5,44 +5,66 @@
 <div class="container py-4">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-5 py-5">
         {% if lesson_plans %}
-            {% for lesson_plan in lesson_plans %}
-            <div class="col">
-                <div class="card shadow-sm border border-opacity-10 rounded-1">
-                    <div class="card-header bg-white row row-cols-2 m-0 font-monospace">
-                        <div class="col text-start">{{ lesson_plan.subject.name }}</div>
-                        <div class="col text-end">{{ lesson_plan.grade.name }} класс</div>
+        {% for lesson_plan in lesson_plans %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border border-opacity-10 rounded-1">
+                <div class="card-header bg-white row row-cols-2 m-0 font-monospace">
+                    <div class="col text-start">{{ lesson_plan.subject.name }}</div>
+                    <div class="col text-end">{{ lesson_plan.grade.name }} класс</div>
+                </div>
+                <div class="card-body row row-cols-2 justify-content-between">
+                    <div class="col-10">
+                        <a href="{{ lesson_plan.get_absolute_url }}" class="link-underline link-underline-opacity-0"><h5
+                                class="card-title fw-bolder">{{ lesson_plan.topic }}</h5></a>
+                        <p class="card-text">{{ lesson_plan.subject_type }}</p>
                     </div>
-                    <div class="card-body row row-cols-2">
-                        <div class="col-10">
-                            <h5 class="card-title fw-bolder">{{ lesson_plan.topic }}</h5>
-                            <p class="card-text">{{ lesson_plan.goal }}</p>
-                        </div>
-                        <div class="col-2 text-center align-self-center">
-                            <img src="{% static 'lesson_planner/images/pencil-square.svg' %}" alt="Edit" class="icon my-2">
-                            <img src="{% static 'lesson_planner/images/trash3-fill.svg' %}" alt="Edit" class="icon my-2">
-                        </div>
+                    <div class="col-2 text-center align-self-center">
+                        <img src="{% static 'lesson_planner/images/pencil-square.svg' %}" alt="Edit" class="icon my-2">
+                        <img src="{% static 'lesson_planner/images/trash3-fill.svg' %}" alt="Edit" class="icon my-2">
                     </div>
-                    <div class="card-footer bg-white row row-cols-2 m-0 px-0 justify-content-between align-items-center">
-                        <div class="col">
-                            <small class="text-body-secondary font-monospace">📅 {{ lesson_plan.date_created|date:"d.m.Y" }}</small>
-                        </div>
-                        <div class="col">
-                            {% if lesson_plan.plan_file %}
-                                <a href="{{ lesson_plan.plan_file.url }}" class="btn btn-sm btn-outline-primary">Скачать</a>
-                            {% else %}
-                                <span class="text-muted small">Файл не прикреплён</span>
-                            {% endif %}
-                        </div>
-                        
+                </div>
+                <div class="card-footer bg-white row row-cols-2 m-0 px-0 justify-content-between align-items-center">
+                    <div class="col">
+                        <small class="text-body-secondary font-monospace">📅 {{ lesson_plan.date_created|date:"d.m.Y" }}</small>
+                    </div>
+                    <div class="col text-end">
+                        {% if lesson_plan.plan_file %}
+                        <a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать</a>
+                        {% else %}
+                        <span class="text-muted small">Файл не прикреплён</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            {% endfor %}
+        </div>
+        {% endfor %}
         {% else %}
-            <div class="col text-center">
-                <h3>Нет планов уроков!</h3>
-            </div>
+        <div class="col text-center">
+            <h3>Нет планов уроков!</h3>
+        </div>
         {% endif %}
     </div>
 </div>
+{% if is_paginated %}
+<div class="container px-5">
+    <nav>
+        <ul class="pagination justify-content-end">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="{{ request.path }}?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+            </li>
+            {% endif %}
+            {% for p in paginator.page_range %}
+            <li class="page-item"><a class="page-link {% if p == page_obj.number %}active{% endif %} "
+                                     href="{{ request.path }}?page={{ p }}">{{ p }}</a></li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{{ request.path }}?page={{ page_obj.next_page_number }}">Следующая</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
 {% endblock content %}

@@ -1,0 +1,23 @@
+{% extends "lesson_planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<div class="container py-4">
+    <h2>{{ lesson_plan.topic }}</h2>
+    <p><strong>Предмет:</strong> {{ lesson_plan.subject }}</p>
+    {% if lesson_plan.subject_type %}<p><strong>Тип урока:</strong> {{ lesson_plan.subject_type }}</p>{% endif %}
+    {% if lesson_plan.grade %}<p><strong>Класс:</strong> {{ lesson_plan.grade }}</p>{% endif %}
+    <p><strong>Цель урока:</strong> {{ lesson_plan.goal }}</p>
+    <p><strong>Дата создания:</strong> {{ lesson_plan.date_created }}</p>
+    <p><strong>Дата изменения:</strong> {{ lesson_plan.date_updated }}</p>
+    {% if lesson_plan.plan_file %}
+    <p><a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать план</a></p>
+    {% else %}
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <span class="text-muted">Файл не прикреплён | </span>
+    <input type="file" name="plan_file" accept=".docx" required>
+    <button type="submit" class="btn_download btn btn-sm">Загрузить</button>
+</form>
+    {% endif %}
+</div>
+{% endblock content %}

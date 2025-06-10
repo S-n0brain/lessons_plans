@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Subject(models.Model):
@@ -23,6 +24,22 @@ class LessonType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class LessonStepTemplate(models.Model):
+    lesson_type = models.ForeignKey(to=LessonType, on_delete=models.CASCADE, related_name="step_templates")
+    name = models.CharField(max_length=200, verbose_name="Название этапа")
+    order = models.PositiveIntegerField(verbose_name="Порядок")
+    object_step = models.Manager()
+    DoesNotExist = models.Manager
+
+    class Meta:
+        verbose_name = "Этап шаблона"
+        verbose_name_plural = "Этапы шаблонов"
+        ordering = ['lesson_type', 'order']
+
+    def __str__(self):
+        return f"{self.lesson_type.name}: {self.order} {self.name}"
 
 
 class Teacher(models.Model):
@@ -78,8 +95,7 @@ class LessonPlan(models.Model):
     date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     plan_file = models.FileField(upload_to='lesson_plans/', verbose_name="Файл конспекта урока",
                                  null=True, blank=True)
-    equipment = models.ManyToManyField(to=Equipment, null=True, blank=True,
-                                       verbose_name="Оборудование")
+    equipment = models.ManyToManyField(to=Equipment, null=True, blank=True, verbose_name="Оборудование")
 
     class Meta:
         verbose_name = "Урок"
@@ -89,3 +105,6 @@ class LessonPlan(models.Model):
     def __str__(self):
         grade = self.grade if self.grade.name else "Без класса"
         return f"{grade} — {self.subject.name} — {self.topic}"
+
+    def get_absolute_url(self):
+        return reverse("lesson_planner:lesson_detail", args=[self.pk], current_app="lesson_planner")
