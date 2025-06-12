@@ -30,3 +30,6 @@ header, footer {
     background-color: var(--main-color);
     color: white;
 }
+#add_plan_btn {
+    color: var(--main-color);
+}

@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import LessonPlan, LessonStepTemplate
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from urllib.request import Request
 from .forms import LessonPlanFileUploadForm
 from django.views.generic.edit import FormMixin
+from django.urls import reverse_lazy
 
 from docx.section import Section
 from docx import Document
@@ -138,7 +139,7 @@ class LessonPlanDetailView(FormMixin, DetailView):
     form_class = LessonPlanFileUploadForm
 
     def __init__(self, **kwargs):
-        super().__init__(kwargs)
+        super().__init__()
         self.object = None
 
     def get_context_data(self, **kwargs):
@@ -147,15 +148,36 @@ class LessonPlanDetailView(FormMixin, DetailView):
         context['form'] = LessonPlanFileUploadForm(instance=self.object)
         return context
 
-
     def post(self,  request: Request, *args, **kwargs):
-        self.object = self.get_object()
-        form = LessonPlanFileUploadForm(request.POST, request.FILES, instance=self.object)
+        self.object : LessonPlan = self.get_object()
+        action = request.POST.get("action")
 
-        if form.is_valid():
-            form.save()
-            return redirect(self.object)
+        if action == "generate":
+            generate_plan_lesson_word(lesson_plan=self.object)
+            return redirect(self.object.get_absolute_url())
+        elif action == "upload":
+            form = LessonPlanFileUploadForm(request.POST, request.FILES, instance=self.object)
+            if form.is_valid():
+                form.save()
+                return redirect(self.object.get_absolute_url())
+        return self.render_to_response(self.get_context_data())
 
-        context = self.get_context_data(object=self.object)
-        context['form'] = form
-        return self.render_to_response(context)
+
+class LessonPlanCreateView(CreateView):
+    model = LessonPlan
+    fields = "__all__"
+    success_url = reverse_lazy("lesson_planner:index")
+
+
+class LessonPlanDeleteView(DeleteView):
+    model = LessonPlan
+    success_url = reverse_lazy("lesson_planner:index")
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.object = None
+
+    def post(self, request, *args, **kwargs):
+        self.object : LessonPlan = self.get_object()
+        self.object.delete()
+        return redirect(self.success_url)

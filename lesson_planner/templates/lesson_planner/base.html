@@ -10,11 +10,24 @@
 </head>
 <body>
     <header class="container-fluid py-4 shadow-lg">
-        <div class="container d-flex align-items-center gap-3">
-            <img src="{% static 'lesson_planner/images/book.svg' %}" alt="Лого" id="logo">
-            <h3 class="my-1 fw-bold">
-                <a href="{% url 'lesson_planner:index' %}" class="link-light link-underline link-underline-opacity-0">Планы уроков</a>
-            </h3>
+        <div class="container">
+            <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between">
+                <!-- Логотип и название -->
+                <div class="d-flex align-items-center gap-3 mb-3 mb-md-0">
+                    <img src="{% static 'lesson_planner/images/book.svg' %}" alt="Лого" id="logo">
+                    <h3 class="my-1 fw-bold">
+                        <a href="{% url 'lesson_planner:index' %}" class="link-light link-underline link-underline-opacity-0">
+                            Планы уроков
+                        </a>
+                    </h3>
+                </div>
+                <!-- Кнопка (справа или по центру на малых экранах) -->
+                <div class="text-center text-md-end">
+                    <a href="{% url 'lesson_planner:create_lesson_plan' %}" class="btn btn_add_plan btn-light" id="add_plan_btn">
+                        <img src="{% static 'lesson_planner/images/plus_icon.svg' %}" alt="+"> Добавить план урока
+                    </a>
+                </div>
+            </div>
         </div>
     </header>
     {% block content %}

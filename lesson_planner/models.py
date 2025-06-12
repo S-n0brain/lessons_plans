@@ -85,17 +85,17 @@ class Equipment(models.Model):
 
 
 class LessonPlan(models.Model):
-    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Предмет')
+    subject = models.ForeignKey(to=Subject, on_delete=models.CASCADE, verbose_name='Предмет', help_text="Выберите предмет")
     subject_type = models.ForeignKey(to=LessonType, on_delete=models.SET_NULL, null=True, blank=True,
-                                     verbose_name="Тип урока")
-    grade = models.ForeignKey(to=Grade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Класс')
-    topic = models.CharField(max_length=300, verbose_name="Тема")
-    goal = models.TextField(blank=True, verbose_name="Цель")
-    date_created = models.DateTimeField(auto_now_add=True)  # Дата добавления записи
+                                     verbose_name="Тип урока", help_text="Выберите тип урока")
+    grade = models.ForeignKey(to=Grade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Класс', help_text="Выберите класс")
+    topic = models.CharField(max_length=300, verbose_name="Тема", help_text="Введите тему урока")
+    goal = models.TextField(blank=True, verbose_name="Цель", help_text="Введите цель урока")
+    date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     plan_file = models.FileField(upload_to='lesson_plans/', verbose_name="Файл конспекта урока",
                                  null=True, blank=True)
-    equipment = models.ManyToManyField(to=Equipment, null=True, blank=True, verbose_name="Оборудование")
+    equipment = models.ManyToManyField(to=Equipment, null=True, blank=True, verbose_name="Оборудование", help_text="Выберите оборудование")
 
     class Meta:
         verbose_name = "Урок"

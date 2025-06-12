@@ -1,10 +1,12 @@
 from django.urls import path
-from .views import LessonPlanListView, LessonPlanDetailView
+from .views import LessonPlanListView, LessonPlanDetailView, LessonPlanCreateView, LessonPlanDeleteView
 
 app_name = 'lesson_planner'
 
 urlpatterns = [
     path('', LessonPlanListView.as_view(), name='index'),
     path('lesson/<int:pk>/', LessonPlanDetailView.as_view(), name='lesson_detail'),
-    # path('lesson/<int:pk>/upload/', upload_lesson_plan_file, name='upload_lesson_plan')
+    path('lesson/create/', LessonPlanCreateView.as_view(), name='create_lesson_plan'),
+    path("lesson/<int:pk>/delete/", LessonPlanDeleteView.as_view(), name="delete_lesson"),
+
 ]
