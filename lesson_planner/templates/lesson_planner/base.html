@@ -12,7 +12,6 @@
     <header class="container-fluid py-4 shadow-lg">
         <div class="container">
             <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between">
-                <!-- Логотип и название -->
                 <div class="d-flex align-items-center gap-3 mb-3 mb-md-0">
                     <img src="{% static 'lesson_planner/images/book.svg' %}" alt="Лого" id="logo">
                     <h3 class="my-1 fw-bold">
@@ -33,8 +32,35 @@
     {% block content %}
     {% endblock content %}
     <footer class="container-fluid py-4">
-        <div class="container">
-
+        <div class="row align-items-center justify-content-around">
+            <div class="col-3 d-flex flex-column">
+                <div class="btn-group dropup">
+                    <button type="button" class="btn btn-light dropdown-toggle" id="btn_types_lesson" data-bs-toggle="dropdown" aria-expanded="false">
+                        Предметы
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for subject in subjects %}
+                            <li><span class="dropdown-item small" href="#">{{ subject.name }}</span></li>
+                        {% endfor %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item dropdown-link" href="#">Редактировать</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-3 d-flex flex-column">
+                <div class="btn-group dropup">
+                    <button type="button" class="btn btn-light dropdown-toggle" id="btn_types_lesson" data-bs-toggle="dropdown" aria-expanded="false">
+                        Типы уроков
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for type_lesson in types_lessons %}
+                            <li><span class="dropdown-item small" href="#">{{ type_lesson.name }}</span></li>
+                        {% endfor %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item dropdown-link" href="#">Редактировать</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>

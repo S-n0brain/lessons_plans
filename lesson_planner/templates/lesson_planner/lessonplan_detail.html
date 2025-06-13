@@ -10,15 +10,16 @@
     <p><strong>Дата создания:</strong> {{ lesson_plan.date_created }}</p>
     <p><strong>Дата изменения:</strong> {{ lesson_plan.date_updated }}</p>
     {% if lesson_plan.plan_file %}
-    <p><a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать план</a></p>
+    <p><a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать план</a>
+        <span class="text-muted small">Файл: {{ lesson_plan.plan_file }}</span>
+    </p>
     {% else %}
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <span class="text-muted">Файл не прикреплён | </span>
             <input type="file" name="plan_file" accept=".docx" required>
             <button type="submit" name="action" value="upload" class="btn_download btn btn-sm">Загрузить</button>
         </form>
-        <form method="post">
+        <form method="post" class="my-3">
             {% csrf_token %}
             <button type="submit" name="action" value="generate" class="btn_download btn btn-sm">Сгенерировать</button>
         </form>

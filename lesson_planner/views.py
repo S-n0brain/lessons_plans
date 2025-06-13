@@ -6,7 +6,7 @@ from django.db.models import QuerySet
 from urllib.request import Request
 from .forms import LessonPlanFileUploadForm
 from django.views.generic.edit import FormMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 from docx.section import Section
 from docx import Document
@@ -160,7 +160,7 @@ class LessonPlanDetailView(FormMixin, DetailView):
             if form.is_valid():
                 form.save()
                 return redirect(self.object.get_absolute_url())
-        return self.render_to_response(self.get_context_data())
+        return self.get(request, args, kwargs)
 
 
 class LessonPlanCreateView(CreateView):
@@ -181,3 +181,11 @@ class LessonPlanDeleteView(DeleteView):
         self.object : LessonPlan = self.get_object()
         self.object.delete()
         return redirect(self.success_url)
+
+
+class LessonPlanUpdateView(UpdateView):
+    model = LessonPlan
+    fields = "__all__"
+
+    def get_success_url(self):
+        return reverse("lesson_planner:lesson_detail", args=[self.object.pk])

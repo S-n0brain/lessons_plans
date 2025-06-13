@@ -14,12 +14,15 @@
                 </div>
                 <div class="card-body row row-cols-2 justify-content-between">
                     <div class="col-10">
-                        <a href="{{ lesson_plan.get_absolute_url }}" class="link-underline link-underline-opacity-0"><h5
-                                class="card-title fw-bolder">{{ lesson_plan.topic }}</h5></a>
+                            <h5 class="card-title fw-bolder">
+                                <a href="{{ lesson_plan.get_absolute_url }}" class="link-underline link-underline-opacity-0">
+                                    {{ lesson_plan.topic }}
+                                </a>
+                            </h5>
                         <p class="card-text">{{ lesson_plan.subject_type }}</p>
                     </div>
                     <div class="col-2 text-center d-flex flex-column align-items-center justify-content-center">
-                        <img src="{% static 'lesson_planner/images/pencil-square.svg' %}" alt="Edit" class="icon my-2">
+                        <a href="{% url 'lesson_planner:update_lesson' lesson_plan.pk  %}"><img src="{% static 'lesson_planner/images/pencil-square.svg' %}" alt="Edit" class="icon my-2"></a>
                         <form action="{% url 'lesson_planner:delete_lesson' lesson_plan.pk %}" method="post">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm p-0">
