@@ -1,0 +1,82 @@
+{% extends "lesson_planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="ModalLabel">Добавить/изменить предмет</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            {% for field in form %}
+            <label for="field_rename" class="form-label">{{field.label}}</label>
+            {{ field }}
+            <div id="help_for_field" class="form-text">
+            {{ field.help_text }}
+            </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
+            <button type="submit" id="btn_save" class="btn btn-save">Сохранить изменения</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <h3 class="fw-bold text-center mt-5">Список предметов</h3>
+  <div class="table-responsive my-5 w-75 mx-auto">
+    <table class="table table-bordered align-middle text-center">
+      <thead>
+        <tr>
+          <th scope="col">Предмет</th>
+          <th scope="col" colspan="2">Действие</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        {% for subject in subjects %}
+          <tr>
+            <th scope="row">{{ subject.name }}</th>
+            <td>
+              <button id="{{ subject.id }}"
+              class="btn btn-link link-underline link-underline-opacity-0 btn_rename_subject"
+              data-bs-toggle="modal" data-bs-target="#Modal">
+              Переименовать
+              </button>
+            </td>
+            <td>
+              <form action="{% url 'lesson_planner:delete_subject' subject.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link link-underline link-underline-opacity-0 btn-delete-subject">
+                  Удалить
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container my-3 text-center">
+    <button class="btn btn-add-subject" data-bs-toggle="modal" data-bs-target="#Modal" id="add">
+      Добавить предмет
+    </button>
+  </div>
+{% endblock content %}
+{% block js %}
+<script>
+  const modal = document.getElementById('Modal');
+
+  modal.addEventListener('shown.bs.modal', event => {
+    const btn = event.relatedTarget;
+    console.log(btn);
+    const btn_save = document.getElementById('btn_save');
+    btn_save.setAttribute('name', 'subject_id');
+    btn_save.setAttribute('value', btn.id);
+    console.log(btn_save);
+  });
+</script>
+{% endblock js %}

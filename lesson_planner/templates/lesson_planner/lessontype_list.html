@@ -1,0 +1,89 @@
+{% extends "lesson_planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+  <div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+
+    </div>
+  </div>
+
+  <h3 class="fw-bold text-center mt-5">Список типов уроков</h3>
+  <div class="table-responsive my-5 w-75 mx-auto">
+    <table class="table table-bordered align-middle text-center">
+      <thead>
+        <tr>
+          <th scope="col">Тип урока</th>
+          <th scope="col" colspan="2">Действие</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        {% for subject_type in subject_types %}
+          <tr>
+            <th scope="row">{{ subject_type.name }}</th>
+            <td>
+              <a href="{% url 'lesson_planner:lessons_steps_list'  subject_type.id  %}" id="{{ subject_type.id }}"
+              class="link link-underline link-underline-opacity-0 btn_rename_subject">
+              Посмотреть этапы урока
+              </a>
+            </td>
+            <td>
+              <form action="{% url "lesson_planner:delete_subject_type" subject_type.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link link-underline link-underline-opacity-0 btn-delete-subject">
+                  Удалить
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container my-3 text-center">
+    <button class="btn btn-add-subject" data-bs-toggle="modal" data-bs-target="#Modal" id="add_type">
+      Добавить тип урока
+    </button>
+  </div>
+
+
+{% endblock content %}
+{% block js %}
+<script>
+  const modal = document.getElementById('Modal');
+
+  modal.addEventListener('shown.bs.modal', event => {
+    let btn = event.relatedTarget;
+    console.log(btn);
+    if (btn.id === "add_type") {
+      modal.innerHTML = `
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="ModalLabel">Добавить тип урока</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="modal-body">
+            {% for field in form_add_type %}
+              <label for="field_add" class="form-label">{{field.label}}</label>
+                {{ field }}
+              <div id="help_for_field" class="form-text">
+                {{ field.help_text }}
+              </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
+            <button type="submit" id="btn_save" class="btn btn-save">Сохранить изменения</button>
+          </div>
+        </form>
+      </div>
+    </div>`;
+      let btn_save = document.getElementById('btn_save');
+      btn_save.setAttribute('name', 'subject_type_id');
+      btn_save.setAttribute('value', btn.id);
+    };
+    });
+</script>
+{% endblock js %}

@@ -15,15 +15,17 @@ header, footer {
 .icon {
     display: block;
 }
-.btn_download, .btn_download:visited {
+.btn_download, .btn_download:visited, .btn-save, .btn-add-subject {
     border: 2px solid var(--main-color);
 }
-.btn_download:hover,  .btn_download:active, .btn_download:focus {
+.btn_download:hover,  .btn_download:active, .btn_download:focus, .btn-save:hover, .btn-save:active, .btn-save:focus,
+.btn-add-subject:hover, .btn-add-subject:active, .btn-add-subject:focus {
     border: 2px solid var(--main-color);
     background-color: var(--main-color);
     color: white;
 }
-.page-item .page-link, #add_plan_btn, #btn_types_lesson, .dropdown-item.dropdown-link  {
+.page-item .page-link, #add_plan_btn, #btn_types_lesson, .dropdown-item.dropdown-link,
+.btn_rename_subject, .btn-delete-subject,  .btn_rename_subject:visited, .btn-delete-subject {
     color: var(--main-color);
 }
 .page-item .page-link.active, .dropdown-item.dropdown-link:active {

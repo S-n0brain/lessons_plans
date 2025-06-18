@@ -3,7 +3,8 @@ from django.urls import reverse
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name='Название предмета')
+    name = models.CharField(max_length=100, unique=True, verbose_name='Название предмета',
+                            help_text="Ведите название предмета")
 
     class Meta:
         verbose_name = "Предмет"
@@ -28,8 +29,8 @@ class LessonType(models.Model):
 
 class LessonStepTemplate(models.Model):
     lesson_type = models.ForeignKey(to=LessonType, on_delete=models.CASCADE, related_name="step_templates")
-    name = models.CharField(max_length=200, verbose_name="Название этапа")
-    order = models.PositiveIntegerField(verbose_name="Порядок")
+    name = models.CharField(max_length=200, verbose_name="Название этапа", help_text="Введите название этапа")
+    order = models.PositiveIntegerField(verbose_name="Порядок", help_text="Введите порядковый номер этапа")
     object_step = models.Manager()
     DoesNotExist = models.Manager
 
@@ -103,8 +104,9 @@ class LessonPlan(models.Model):
         ordering = ['grade__name', 'subject__name']
 
     def __str__(self):
+        subject_type = self.subject_type.name if self.subject_type else "Без типа"
         grade = self.grade if self.grade.name else "Без класса"
-        return f"{grade} — {self.subject.name} — {self.topic}"
+        return f"{grade} - {self.subject.name} - {self.topic} - {subject_type}"
 
     def get_absolute_url(self):
         return reverse("lesson_planner:lesson_detail", args=[self.pk], current_app="lesson_planner")

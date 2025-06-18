@@ -33,7 +33,7 @@
     {% endblock content %}
     <footer class="container-fluid py-4">
         <div class="row align-items-center justify-content-around">
-            <div class="col-3 d-flex flex-column">
+            <div class="col col-md-3 d-flex flex-column my-2 my-md-0">
                 <div class="btn-group dropup">
                     <button type="button" class="btn btn-light dropdown-toggle" id="btn_types_lesson" data-bs-toggle="dropdown" aria-expanded="false">
                         Предметы
@@ -43,11 +43,11 @@
                             <li><span class="dropdown-item small" href="#">{{ subject.name }}</span></li>
                         {% endfor %}
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item dropdown-link" href="#">Редактировать</a></li>
+                        <li><a class="dropdown-item dropdown-link" href="{% url 'lesson_planner:subjects_list' %}">Редактировать</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="col-3 d-flex flex-column">
+            <div class="col col-md-3 d-flex flex-column my-2 my-md-0">
                 <div class="btn-group dropup">
                     <button type="button" class="btn btn-light dropdown-toggle" id="btn_types_lesson" data-bs-toggle="dropdown" aria-expanded="false">
                         Типы уроков
@@ -57,12 +57,13 @@
                             <li><span class="dropdown-item small" href="#">{{ type_lesson.name }}</span></li>
                         {% endfor %}
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item dropdown-link" href="#">Редактировать</a></li>
+                        <li><a class="dropdown-item dropdown-link" href="{% url 'lesson_planner:subject_types_list' %}">Редактировать</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+{% block js %}{% endblock js %}
 </body>
 </html>

@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import LessonPlan, LessonStepTemplate
+from .models import LessonPlan, LessonStepTemplate, Subject, LessonType
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet
 from urllib.request import Request
-from .forms import LessonPlanFileUploadForm
+from .forms import LessonPlanFileUploadForm, SubjectModelForm, LessonPlanModelForm, \
+    SubjectTypeModelForm, LessonStepTemplateModelForm, EditLessonStepTemplateModelForm
 from django.views.generic.edit import FormMixin
 from django.urls import reverse_lazy, reverse
+from django.http.response import HttpResponseBadRequest
 
 from docx.section import Section
 from docx import Document
@@ -148,8 +150,8 @@ class LessonPlanDetailView(FormMixin, DetailView):
         context['form'] = LessonPlanFileUploadForm(instance=self.object)
         return context
 
-    def post(self,  request: Request, *args, **kwargs):
-        self.object : LessonPlan = self.get_object()
+    def post(self, request: Request, *args, **kwargs):
+        self.object: LessonPlan = self.get_object()
         action = request.POST.get("action")
 
         if action == "generate":
@@ -165,8 +167,8 @@ class LessonPlanDetailView(FormMixin, DetailView):
 
 class LessonPlanCreateView(CreateView):
     model = LessonPlan
-    fields = "__all__"
     success_url = reverse_lazy("lesson_planner:index")
+    form_class = LessonPlanModelForm
 
 
 class LessonPlanDeleteView(DeleteView):
@@ -178,14 +180,116 @@ class LessonPlanDeleteView(DeleteView):
         self.object = None
 
     def post(self, request, *args, **kwargs):
-        self.object : LessonPlan = self.get_object()
+        self.object: LessonPlan = self.get_object()
         self.object.delete()
         return redirect(self.success_url)
 
 
 class LessonPlanUpdateView(UpdateView):
     model = LessonPlan
-    fields = "__all__"
+    form_class = LessonPlanModelForm
 
     def get_success_url(self):
         return reverse("lesson_planner:lesson_detail", args=[self.object.pk])
+
+
+class SubjectListView(FormMixin, ListView):
+    model = Subject
+    context_object_name = "subjects"
+    form_class = SubjectModelForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Предметы'
+        context['form'] = self.get_form(form_class=self.form_class)
+        return context
+
+    def post(self, request: Request, *args, **kwargs):
+        subject_id = request.POST.get("subject_id")
+        if subject_id != "add":
+            try:
+                subject: Subject = self.model.objects.get(id=subject_id)
+            except self.model.DoesNotExist:
+                return HttpResponseBadRequest("Предмет не найден")
+            form = SubjectModelForm(request.POST, instance=subject)
+        else:
+            form = SubjectModelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(request.path)
+        return self.get(request, args, kwargs)
+
+
+class SubjectDeleteView(DeleteView):
+    model = Subject
+    success_url = reverse_lazy("lesson_planner:subjects_list")
+
+
+class SubjectTypeListView(FormMixin, ListView):
+    model = LessonType
+    context_object_name = "subject_types"
+    form_class = SubjectTypeModelForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=None, **kwargs)
+        context["title"] = "Типы уроков"
+        context["form_add_type"] = self.get_form(form_class=self.form_class)
+
+        steps_lessons = self.model.objects.prefetch_related("step_templates")
+        context["steps_lessons"] = {}
+        for lesson_type in steps_lessons:
+            for step in lesson_type.step_templates.all():
+                if lesson_type == step.lesson_type:
+                    context["steps_lessons"][lesson_type] = context["steps_lessons"].setdefault(lesson_type, []) + [step]
+        return context
+
+    def post(self, request: Request, *args, **kwargs):
+        subject_type_id = request.POST.get("subject_type_id")
+        if subject_type_id == "add_type":
+            form = SubjectTypeModelForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect(request.path)
+        return self.get(request, args, kwargs)
+
+
+class SubjectTypeDeleteView(DeleteView):
+    model = LessonType
+    success_url = reverse_lazy("lesson_planner:subject_types_list")
+
+
+class LessonStepTemplateListView(FormMixin, ListView):
+    model = LessonStepTemplate
+    context_object_name = "lesson_steps"
+    form_class = LessonStepTemplateModelForm
+
+    def get_queryset(self):
+        return LessonStepTemplate.object_step.filter(lesson_type_id=self.kwargs["pk"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Этапы урока"
+        context["lesson_type"] = get_object_or_404(LessonType, pk=self.kwargs["pk"])
+        context["form_add_step"] = self.get_form(form_class=self.form_class)
+        context["form_edit_step"] = EditLessonStepTemplateModelForm()
+        return context
+
+    def post(self, request: Request, *args, **kwargs):
+        subject_step_id = request.POST.get("subject_step_id")
+        print(subject_step_id)
+        if subject_step_id == "add_step":
+            form = LessonStepTemplateModelForm(request.POST)
+            if form.is_valid():
+                step = form.save(commit=False)
+                lesson_type = get_object_or_404(LessonType, pk=self.kwargs["pk"])
+                step.lesson_type = lesson_type
+                step.save()
+                return redirect(request.path)
+        return self.get(request, args, kwargs)
+
+
+class LessonStepTemplateDeleteView(DeleteView):
+    model = LessonStepTemplate
+
+    def get_success_url(self):
+        return reverse("lesson_planner:lessons_steps_list", args=[self.object.lesson_type.pk])
