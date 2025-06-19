@@ -9,8 +9,8 @@
 
 
 <h3 class="fw-bold text-center mt-5">Этапы типа урока: {{ lesson_type.name }}</h3>
-  <div class="table-responsive my-5 w-75 mx-auto">
-    <table class="table table-bordered align-middle text-center">
+  <div class="table-responsive my-5 w-75 mx-auto border p-3">
+    <table class="table table-bordered align-middle text-center m-0">
       <thead>
         <tr>
           <th scope="col">№</th>
@@ -44,7 +44,7 @@
           </tr>
           {% empty %}
             <tr>
-                <td colspan="3">Нет этапов для этого типа урока.</td>
+                <td colspan="3">Нет этапов для этого типа урока</td>
             </tr>
         {% endfor %}
       </tbody>
@@ -61,7 +61,7 @@
   const modal = document.getElementById('Modal');
 
   modal.addEventListener('shown.bs.modal', event => {
-    let btn = event.relatedTarget;
+    const btn = event.relatedTarget;
     console.log(btn);
     if (btn.id === "add_step") {
       modal.innerHTML = `
@@ -94,7 +94,42 @@
           </form>
         </div>
       </div>`;
-      let btn_save = document.getElementById('btn_save');
+      const btn_save = document.getElementById('btn_save');
+      btn_save.setAttribute('name', 'subject_step_id');
+      btn_save.setAttribute('value', btn.id);
+      console.log(btn_save);
+    }
+    else {
+      modal.innerHTML = `
+      <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title fs-5" id="ModalLabel">Добавить этап урока</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <form method="post">
+        {% csrf_token %}
+        <div class="modal-body" id="form_body">
+              {% for field in form_edit_step %}
+                <label for="field_add_step" class="form-label">{{field.label}}</label>
+                  {{ field }}
+                  {% if field.errors %}
+                    <div class="text-danger small mt-1">
+                        {{ field.errors.as_text|linebreaksbr }}
+                    </div>
+                {% endif %}
+                <div id="help_for_field_{{field.name}}" class="form-text">
+                  {{ field.help_text }}
+                </div>
+              {% endfor %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Закрыть</button>
+              <button type="submit" id="btn_save" class="btn btn-save">Сохранить изменения</button>
+            </div>
+          </form>
+        </div>
+      </div>`;
       btn_save.setAttribute('name', 'subject_step_id');
       btn_save.setAttribute('value', btn.id);
       console.log(btn_save);

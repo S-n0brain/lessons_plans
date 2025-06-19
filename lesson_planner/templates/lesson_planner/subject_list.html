@@ -28,8 +28,8 @@
     </div>
   </div>
   <h3 class="fw-bold text-center mt-5">Список предметов</h3>
-  <div class="table-responsive my-5 w-75 mx-auto">
-    <table class="table table-bordered align-middle text-center">
+  <div class="table-responsive my-5 w-75 mx-auto border p-3">
+    <table class="table table-bordered align-middle text-center m-0">
       <thead>
         <tr>
           <th scope="col">Предмет</th>
@@ -56,6 +56,10 @@
               </form>
             </td>
           </tr>
+          {% empty %}
+            <tr>
+                <td colspan="3">Нет предметов</td>
+            </tr>
         {% endfor %}
       </tbody>
     </table>

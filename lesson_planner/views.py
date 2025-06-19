@@ -126,6 +126,30 @@ def save_document_in_buffer(document: Document, buffer: BytesIO) -> None:
     buffer.seek(0)
 
 
+def docx_to_html(path: str) -> str:
+    document = Document(path)
+    table_html = "<table class='table table-bordered m-0'>"
+    table = document.tables[0]
+    for i, row in enumerate(table.rows, 1):
+        if i == 1:
+            table_html += "<thead class='text-center'>"
+        if i == 2:
+            table_html += "<tbody>"
+        table_html += "<tr>"
+        for cell in row.cells:
+            if i == 1:
+                table_html += "".join(f"<th>{cell.text}</th>")
+            else:
+                table_html += "".join(f"<td>{cell.text}</td>")
+        table_html += "</tr>"
+        if i == 1:
+            table_html += "</thead>"
+    table_html += "</tbody></table>"
+    print(table_html)
+    # return "".join(f'<p>{p.text}</p>' for p in document.paragraphs)
+    return table_html
+
+
 class LessonPlanListView(ListView):
     model = LessonPlan
     template_name = "lesson_planner/index.html"
@@ -148,6 +172,8 @@ class LessonPlanDetailView(FormMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = "План урока"
         context['form'] = LessonPlanFileUploadForm(instance=self.object)
+        if self.object.plan_file:
+            context["docx_html"] = docx_to_html(self.object.plan_file.path)
         return context
 
     def post(self, request: Request, *args, **kwargs):
@@ -240,7 +266,8 @@ class SubjectTypeListView(FormMixin, ListView):
         for lesson_type in steps_lessons:
             for step in lesson_type.step_templates.all():
                 if lesson_type == step.lesson_type:
-                    context["steps_lessons"][lesson_type] = context["steps_lessons"].setdefault(lesson_type, []) + [step]
+                    context["steps_lessons"][lesson_type] = context["steps_lessons"].setdefault(lesson_type, []) + [
+                        step]
         return context
 
     def post(self, request: Request, *args, **kwargs):
@@ -263,7 +290,7 @@ class LessonStepTemplateListView(FormMixin, ListView):
     context_object_name = "lesson_steps"
     form_class = LessonStepTemplateModelForm
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return LessonStepTemplate.object_step.filter(lesson_type_id=self.kwargs["pk"])
 
     def get_context_data(self, **kwargs):
@@ -276,7 +303,6 @@ class LessonStepTemplateListView(FormMixin, ListView):
 
     def post(self, request: Request, *args, **kwargs):
         subject_step_id = request.POST.get("subject_step_id")
-        print(subject_step_id)
         if subject_step_id == "add_step":
             form = LessonStepTemplateModelForm(request.POST)
             if form.is_valid():
@@ -285,6 +311,13 @@ class LessonStepTemplateListView(FormMixin, ListView):
                 step.lesson_type = lesson_type
                 step.save()
                 return redirect(request.path)
+        else:
+            step: LessonStepTemplate = self.get_queryset().get(id=subject_step_id)
+            form = EditLessonStepTemplateModelForm(request.POST, instance=step)
+            if form.is_valid():
+                form.save()
+                return redirect(request.path)
+            print(form.errors)
         return self.get(request, args, kwargs)
 
 
