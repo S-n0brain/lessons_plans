@@ -24,10 +24,13 @@
                     {% if user.is_authenticated %}
                     <form action="{% url 'users:logout' %}" method="post">
                         {% csrf_token %}                  
-                    <button type class="btn btn_logout btn-light mx-md-3 my-1" id="logout">
+                    <button type class="btn btn_logout btn-light mx-md-0 my-1" id="logout">
                         <img src="{% static 'users/images/logout.svg' %}" alt="logout"> Выход
                     </button>
-                    <a href="{% url 'lesson_planner:create_lesson_plan' %}" class="btn btn_add_plan btn-light" id="add_plan_btn">
+                    <a href="{% url 'users:password_change' %}" class="btn btn_change_pass btn-light mx-md-0 mx-lg-3 my-1" id="change_pass">
+                        Смена пароля
+                    </a>
+                    <a href="{% url 'lesson_planner:create_lesson_plan' %}" class="btn btn_add_plan btn-light ms-md-5 mt-sm-3 mt-md-3 mt-lg-0" id="add_plan_btn">
                         <img src="{% static 'lesson_planner/images/plus_icon.svg' %}" alt="+"> Добавить план урока
                     </a>
                     </form>
@@ -45,7 +48,7 @@
     </header>
     {% block content %}
     {% endblock content %}
-    <footer class="container-fluid py-4 bottom-0 end-0">
+    <footer class="container-fluid py-4 bottom-0 end-0 position-sticky">
         <div class="row align-items-center justify-content-around">
             <div class="col col-md-3 d-flex flex-column my-2 my-md-0">
                 <div class="btn-group dropup">

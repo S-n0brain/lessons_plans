@@ -13,7 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 
-from django.conf.global_settings import LOGOUT_REDIRECT_URL
+from django.conf.global_settings import LOGOUT_REDIRECT_URL, EMAIL_USE_SSL, EMAIL_PORT, EMAIL_HOST_USER, \
+    EMAIL_HOST_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -147,3 +148,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = "lesson_planner:index"
+LOGIN_URL = 'users:login'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
+EMAIL_PORT = 465
+EMAIL_HOST_USER = "koltafvhdgv@gmail.com"
+EMAIL_HOST_PASSWORD = "xipccydoxtuhxvui"

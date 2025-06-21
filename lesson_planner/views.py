@@ -11,6 +11,7 @@ from django.urls import reverse_lazy, reverse
 from django.http.response import HttpResponseBadRequest
 import os.path
 from django.http import HttpRequest
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from docx.section import Section
 from docx import Document
@@ -184,7 +185,7 @@ class LessonPlanListView(ListView):
         return queryset
 
 
-class LessonPlanDetailView(FormMixin, DetailView):
+class LessonPlanDetailView(FormMixin, LoginRequiredMixin, DetailView):
     model = LessonPlan
     context_object_name = "lesson_plan"
     template_name = "lesson_planner/lessonplan_detail.html"
@@ -224,13 +225,13 @@ class LessonPlanDetailView(FormMixin, DetailView):
         return self.get(request, args, kwargs)
 
 
-class LessonPlanCreateView(CreateView):
+class LessonPlanCreateView(LoginRequiredMixin, CreateView):
     model = LessonPlan
     success_url = reverse_lazy("lesson_planner:index")
     form_class = LessonPlanModelForm
 
 
-class LessonPlanDeleteView(DeleteView):
+class LessonPlanDeleteView(LoginRequiredMixin, DeleteView):
     model = LessonPlan
     success_url = reverse_lazy("lesson_planner:index")
 
@@ -244,7 +245,7 @@ class LessonPlanDeleteView(DeleteView):
         return redirect(self.success_url)
 
 
-class LessonPlanUpdateView(UpdateView):
+class LessonPlanUpdateView(LoginRequiredMixin, UpdateView):
     model = LessonPlan
     form_class = LessonPlanModelForm
 
@@ -252,7 +253,7 @@ class LessonPlanUpdateView(UpdateView):
         return reverse("lesson_planner:lesson_detail", args=[self.object.pk])
 
 
-class SubjectListView(FormMixin, ListView):
+class SubjectListView(FormMixin, LoginRequiredMixin, ListView):
     model = Subject
     context_object_name = "subjects"
     form_class = SubjectModelForm
@@ -279,12 +280,12 @@ class SubjectListView(FormMixin, ListView):
         return self.get(request, args, kwargs)
 
 
-class SubjectDeleteView(DeleteView):
+class SubjectDeleteView(LoginRequiredMixin, DeleteView):
     model = Subject
     success_url = reverse_lazy("lesson_planner:subjects_list")
 
 
-class SubjectTypeListView(FormMixin, ListView):
+class SubjectTypeListView(FormMixin, LoginRequiredMixin,  ListView):
     model = LessonType
     context_object_name = "subject_types"
     form_class = SubjectTypeModelForm
@@ -311,12 +312,12 @@ class SubjectTypeListView(FormMixin, ListView):
         return self.get(request, args, kwargs)
 
 
-class SubjectTypeDeleteView(DeleteView):
+class SubjectTypeDeleteView(LoginRequiredMixin, DeleteView):
     model = LessonType
     success_url = reverse_lazy("lesson_planner:subject_types_list")
 
 
-class LessonStepTemplateListView(FormMixin, ListView):
+class LessonStepTemplateListView(FormMixin, LoginRequiredMixin, ListView):
     model = LessonStepTemplate
     context_object_name = "lesson_steps"
     form_class = LessonStepTemplateModelForm
@@ -352,7 +353,7 @@ class LessonStepTemplateListView(FormMixin, ListView):
         return self.get(request, args, kwargs)
 
 
-class LessonStepTemplateDeleteView(DeleteView):
+class LessonStepTemplateDeleteView(LoginRequiredMixin, DeleteView):
     model = LessonStepTemplate
 
     def get_success_url(self):

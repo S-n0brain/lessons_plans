@@ -19,7 +19,7 @@
                 <p class="h3"> Вы не имеете доступа к этой странице. Войдите в систему с другими параметрами</p>
                 {% else %}
                 <p class="h3"> Войдите, чтобы увидеть эту страницу.</p>
-                <a href="{% url 'login' %}" class="btn btn-primary my-4 btn-lg">Войти</a>
+                <a href="{% url 'users:login' %}" class="btn btn-reg my-4 btn-lg">Войти</a>
                 {% endif %}
             </div>
             {% endif %}
@@ -38,7 +38,11 @@
                                aria-label="Пароль"
                                id="password" required>
                     </div>
-                    <div class="form-text mx-3 mt-3 text-end"><a href=""><strong>Забыли пароль?</strong></a></div>
+                    <div class="form-text mx-3 mt-3 text-end ">
+                        <a href="{% url "users:password_reset" %}" class="link-underline link-underline-opacity-0 reset_pass">
+                            <strong>Забыли пароль?</strong>
+                        </a>
+                    </div>
                     <div class="text-center my-3">
                         <button type="submit" class="btn btn-log" value="Вход">Войти</button>
                     </div>
