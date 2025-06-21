@@ -1,5 +1,6 @@
+from cProfile import label
 from django import forms
-from .models import LessonPlan, Subject, LessonType, LessonStepTemplate
+from .models import LessonPlan, Subject, LessonType, LessonStepTemplate, Grade
 
 
 class LessonPlanModelForm(forms.ModelForm):
@@ -66,3 +67,22 @@ class EditLessonStepTemplateModelForm(forms.ModelForm):
     class Meta:
         model = LessonStepTemplate
         fields = ["name"]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control", "id": "field_add_step",
+                                           "aria-labelledby": "help_for_field"})
+        }
+
+
+class LessonPlanFilterForm(forms.Form):
+    subjects = forms.ModelMultipleChoiceField(queryset=Subject.objects.all(),
+                                              required=False,
+                                              label="Предмет",
+                                              widget=forms.CheckboxSelectMultiple)
+    grades = forms.ModelMultipleChoiceField(queryset=Grade.objects.all(),
+                                              required=False,
+                                              label="Класс",
+                                              widget=forms.CheckboxSelectMultiple)
+    types_lessons = forms.ModelMultipleChoiceField(queryset=LessonType.objects.all(),
+                                            required=False,
+                                            label="Тип урока",
+                                            widget=forms.CheckboxSelectMultiple)

@@ -1,0 +1,51 @@
+{% extends "lesson_planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<div class="content">
+    {% if form.errors %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-5 text-center">
+                <p class="h6">Логин и пароль не совпали</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="container px-5 py-5">
+        <div class="row justify-content-center">
+            {% if next %}
+            <div class="col-8 text-center py-3">
+                {% if user.is_authenticated %}
+                <p class="h3"> Вы не имеете доступа к этой странице. Войдите в систему с другими параметрами</p>
+                {% else %}
+                <p class="h3"> Войдите, чтобы увидеть эту страницу.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary my-4 btn-lg">Войти</a>
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="{% if next %}d-none{% endif %} col-sm-12 col-md-8 col-lg-6 col-xxl-5 border border-3 rounded-3 shadow-lg">
+                <form action="{% url 'users:login' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-text mx-3 mt-3 text-center"><strong>Введите логин и пароль</strong></div>
+                    <div class="input-group my-4">
+                        {# {{ form.username }}#}
+                        <input type="text" name="username" class="form-control mx-2" placeholder="Имя пользователя"
+                               aria-label="Имя пользователя" aria-describedby="basic-addon1" required>
+                    </div>
+                    <div class="input-group my-3">
+                        {# {{ form.password }}#}
+                        <input type="password" name="password" class="form-control mx-2" placeholder="Пароль"
+                               aria-label="Пароль"
+                               id="password" required>
+                    </div>
+                    <div class="form-text mx-3 mt-3 text-end"><a href=""><strong>Забыли пароль?</strong></a></div>
+                    <div class="text-center my-3">
+                        <button type="submit" class="btn btn-log" value="Вход">Войти</button>
+                    </div>
+                    <input type="hidden" value="{{ next }}" name="next">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

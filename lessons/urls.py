@@ -23,5 +23,6 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('lesson_planner.urls'))
+    path('', include('lesson_planner.urls')),
+    path('users/', include("users.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + debug_toolbar_urls()

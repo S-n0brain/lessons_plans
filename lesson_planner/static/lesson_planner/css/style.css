@@ -1,8 +1,12 @@
 :root {
-  --main-color: rgb(67, 56, 202);  
+  --main-color: rgb(67, 56, 202);
 }
 body {
-    background-color: rgb(245,250,250);
+    background-color: rgb(245, 250, 250);
+   
+}
+.content {
+    min-height: 100vh;
 }
 header, footer {
     background-color: var(--main-color);
@@ -15,20 +19,32 @@ header, footer {
 .icon {
     display: block;
 }
-.btn_download, .btn_download:visited, .btn-save, .btn-add-subject {
+.btn_download, .btn_download:visited, .btn-save, .btn-add-subject, .btn-log, .btn-reg {
     border: 2px solid var(--main-color);
 }
-.btn_download:hover,  .btn_download:active, .btn_download:focus, .btn-save:hover, .btn-save:active, .btn-save:focus,
-.btn-add-subject:hover, .btn-add-subject:active, .btn-add-subject:focus {
+.btn_download:hover,  .btn_download:active, .btn_download:focus,
+.btn-save:hover, .btn-save:active, .btn-save:focus,
+.btn-add-subject:hover, .btn-add-subject:active, .btn-add-subject:focus,
+.btn-log:hover, .btn-log:active, .btn-log:focus,
+.btn-reg:hover, .btn-reg:active, .btn-reg:focus {
     border: 2px solid var(--main-color);
     background-color: var(--main-color);
     color: white;
 }
 .page-item .page-link, #add_plan_btn, #btn_types_lesson, .dropdown-item.dropdown-link,
-.btn_rename_subject, .btn-delete-subject,  .btn_rename_subject:visited, .btn-delete-subject {
+.btn_rename_subject, .btn-delete-subject,  .btn_rename_subject:visited, .btn-delete-subject,
+#login, #logout, #sign_up {
     color: var(--main-color);
 }
 .page-item .page-link.active, .dropdown-item.dropdown-link:active {
     background-color: var(--main-color);
+    color: white;
+}
+.btn-filter {
+    background-color: var(--main-color);
+    color: white;
+}
+.btn-filter:hover,  .btn-filter:active, .btn-filter:focus{
+    background-color: rgb(94, 81, 234);
     color: white;
 }

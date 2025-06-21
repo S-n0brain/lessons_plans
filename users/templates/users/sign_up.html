@@ -1,0 +1,39 @@
+{% extends "lesson_planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<div class="content">
+    <div class="container px-5 py-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-8 col-lg-6 col-xxl-5 border border-3 rounded-3 shadow-lg px-2">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-text mx-3 mt-3 text-center"><strong>Регистрация нового пользователя</strong></div>
+                        {% if form.errors %}
+                            <div class="row justify-content-center">
+                                <div class="col-5 text-center">
+                                    <p class="h6 text-danger">Пожалуйста, исправьте ошибки в форме</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% for field in form  %}
+                    <div class="input-group my-2 w-75 mx-auto">
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="text-danger small ms-2">
+                        {{ field.errors.as_text|linebreaksbr }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    <div class="text-center my-3">
+                        <button type="submit" class="btn btn-reg">Зарегистрироваться</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

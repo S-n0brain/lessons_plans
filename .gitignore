@@ -28,7 +28,6 @@ Thumbs.db
 # Migrations (если не хочешь коммитить их сразу)
 **/migrations/*.pyc
 **/migrations/__pycache__/
-# Если хочешь игнорировать миграции целиком:
 # **/migrations/
 
 # pip

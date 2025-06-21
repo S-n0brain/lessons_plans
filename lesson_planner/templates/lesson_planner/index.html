@@ -2,7 +2,55 @@
 {% load static %}
 {% block title %}{{ title }}{% endblock title %}
 {% block content %}
-<div class="container py-4">
+    <div class="container py-4 content">
+        <div class="card text-center filter-card mt-5">
+            <form method="get">
+                <div class="card-body">
+                    <div class="row row-cols-1 row-cols-sm-4 justify-content-evenly align-items-center">
+                        <div class="col col-lg-3 position-relative px-2">
+                            <button class="btn w-100" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapse_class" aria-expanded="false" aria-controls="collapse_class">
+                                Класс <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
+                            </button>
+                            <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_class">
+                                <div class="card p-1 mt-2 w-100 text-start">
+                                    {{ form.grades }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col col-lg-3 position-relative px-2">
+                            <button class="btn w-100" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapse_subject" aria-expanded="false" aria-controls="collapse_subject">
+                                Предмет <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
+                            </button>
+                            <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_subject">
+                                <div class="card p-1 mt-2 w-100 text-start">
+                                    {{ form.subjects }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-lg-3 position-relative px-2">
+                            <button class="btn w-100" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapse_subject_type" aria-expanded="false" aria-controls="collapse_subject_type">
+                                Тип урока <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
+                            </button>
+                            <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_subject_type">
+                                <div class="card p-1 mt-2 w-100 text-start">
+                                    {{ form.types_lessons }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-sm btn-filter w-75 mb-2">
+                                <img src="{% static "lesson_planner/images/filter.svg" %}" alt="Filter">Фильтр
+                            </button>
+                            <a href="{% url 'lesson_planner:index' %}" class="btn btn-sm btn-filter w-75">Сбросить</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-5 py-5">
         {% if lesson_plans %}
         {% for lesson_plan in lesson_plans %}

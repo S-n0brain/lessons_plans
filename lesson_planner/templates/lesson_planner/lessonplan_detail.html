@@ -2,11 +2,10 @@
 {% block title %}{{ title }}{% endblock title %}
 
 {% block content %}
-<div class="container py-4">
-  <div class="row">
-    <!-- Левая колонка: информация о плане -->
+<div class="container py-4 content">
+  <div class="row align-items-center">
     <div class="col-md-4 mb-4">
-      <h2>{{ lesson_plan.topic }}</h2>
+      <h2 class="text-center my-3">{{ lesson_plan.topic }}</h2>
       <p><strong>Предмет:</strong> {{ lesson_plan.subject }}</p>
       {% if lesson_plan.subject_type %}
         <p><strong>Тип урока:</strong> {{ lesson_plan.subject_type }}</p>
@@ -17,12 +16,15 @@
       <p><strong>Цель урока:</strong> {{ lesson_plan.goal }}</p>
       <p><strong>Дата создания:</strong> {{ lesson_plan.date_created }}</p>
       <p><strong>Дата изменения:</strong> {{ lesson_plan.date_updated }}</p>
-
       {% if lesson_plan.plan_file %}
         <p>
           <a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать план</a>
-          <span class="text-muted small">Файл: {{ lesson_plan.plan_file }}</span>
+          <span class="text-muted small d-block mt-3">Файл: {{ lesson_plan.plan_file }}</span>
         </p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="action" value="delete" class="btn_download btn btn-sm">Удалить план</button>
+        </form>
       {% else %}
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
@@ -35,12 +37,13 @@
         </form>
       {% endif %}
     </div>
-
     <div class="col-md-8">
-      {% if lesson_plan.plan_file %}
+      {% if lesson_plan.plan_file and docx_html %}
         <div class="border p-3 table-responsive">
           {{ docx_html|safe }}
         </div>
+        {% else %}
+        <h3 class="text-center">Не удалось загрузить таблицу</h3>
       {% endif %}
     </div>
   </div>

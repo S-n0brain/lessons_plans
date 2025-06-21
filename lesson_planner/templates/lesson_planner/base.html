@@ -12,7 +12,7 @@
     <header class="container-fluid py-4 shadow-lg">
         <div class="container">
             <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between">
-                <div class="d-flex align-items-center gap-3 mb-3 mb-md-0">
+                <div class="d-flex align-items-center gap-3 my-1">
                     <img src="{% static 'lesson_planner/images/book.svg' %}" alt="Лого" id="logo">
                     <h3 class="my-1 fw-bold">
                         <a href="{% url 'lesson_planner:index' %}" class="link-light link-underline link-underline-opacity-0">
@@ -20,18 +20,32 @@
                         </a>
                     </h3>
                 </div>
-                <!-- Кнопка (справа или по центру на малых экранах) -->
                 <div class="text-center text-md-end">
+                    {% if user.is_authenticated %}
+                    <form action="{% url 'users:logout' %}" method="post">
+                        {% csrf_token %}                  
+                    <button type class="btn btn_logout btn-light mx-md-3 my-1" id="logout">
+                        <img src="{% static 'users/images/logout.svg' %}" alt="logout"> Выход
+                    </button>
                     <a href="{% url 'lesson_planner:create_lesson_plan' %}" class="btn btn_add_plan btn-light" id="add_plan_btn">
                         <img src="{% static 'lesson_planner/images/plus_icon.svg' %}" alt="+"> Добавить план урока
                     </a>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn_login btn-light mx-md-3 my-1" id="login">
+                        <img src="{% static 'users/images/login.svg' %}" alt="login"> Вход
+                    </a>
+                    <a href="{% url 'users:sign_up' %}" class="btn btn_login btn-light mx-md-3 my-1" id="sign_up">
+                        Регистрация
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </header>
     {% block content %}
     {% endblock content %}
-    <footer class="container-fluid py-4">
+    <footer class="container-fluid py-4 bottom-0 end-0">
         <div class="row align-items-center justify-content-around">
             <div class="col col-md-3 d-flex flex-column my-2 my-md-0">
                 <div class="btn-group dropup">

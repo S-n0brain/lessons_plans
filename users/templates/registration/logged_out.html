@@ -1,0 +1,14 @@
+{% extends "lesson_planner/base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+<div class="container px-5 py-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-4 align-items-center">
+                <p class="h4">
+                    Выход из системы!
+                </p>
+                <a href="{% url 'users:login' %}" class="">Нажмите, чтобы снова войти</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

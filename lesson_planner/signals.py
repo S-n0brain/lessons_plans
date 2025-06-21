@@ -31,7 +31,8 @@ def delete_old_file_docx_after_update(sender, instance: LessonPlan, **kwargs):
     new_file : FieldFile = instance.plan_file
     print(new_file)
     print(old_file)
-    if (old_file and not new_file) or (old_file and new_file):
+
+    if old_file and os.path.exists(old_file.path):
         try:
             os.remove(path=old_file.path)
         except FileExistsError:
