@@ -97,8 +97,8 @@ class LessonPlan(models.Model):
     topic = models.CharField(max_length=300, verbose_name="Тема", help_text="Введите тему урока")
     creator = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="Автор")
     goal = models.TextField(blank=True, verbose_name="Цель", help_text="Введите цель урока")
-    date_created = models.DateTimeField(auto_now_add=True)
-    date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+    date_created = models.DateField(auto_now_add=True)
+    date_updated = models.DateField(auto_now=True, verbose_name="Дата обновления")
     plan_file = models.FileField(upload_to='lesson_plans/', verbose_name="Файл конспекта урока",
                                  null=True, blank=True)
     equipment = models.ManyToManyField(to=Equipment, null=True, blank=True, verbose_name="Оборудование", help_text="Выберите оборудование")
