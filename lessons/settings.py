@@ -24,12 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p8mm0h88m3jn676w04s98^_kh70pt4!87tt*5$a)8*v+%84s)0'
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
+
+ALLOWED_HOSTS = ['.railway.app', '127.0.0.1']
 INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
@@ -139,6 +142,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [      # Папки, где Django ищет статику (кроме static/ внутри приложений)
     BASE_DIR / "static",  # Глобальная папка static в корне проекта
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -158,4 +162,4 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_SSL = True
 EMAIL_PORT = 465
 EMAIL_HOST_USER = "koltafvhdgv@gmail.com"
-EMAIL_HOST_PASSWORD = "xipccydoxtuhxvui"
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
