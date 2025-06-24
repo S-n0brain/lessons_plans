@@ -2,42 +2,71 @@
 {% load static %}
 {% block title %}{{ title }}{% endblock title %}
 {% block content %}
-    <div class="container py-4 content">
+<div class="container py-4 content">
+    {% if user.is_authenticated %}
         <div class="card text-center filter-card mt-5">
             <form method="get">
                 <div class="card-body">
-                    <div class="row row-cols-1 row-cols-sm-4 justify-content-evenly align-items-center">
-                        <div class="col col-lg-3 position-relative px-2">
+                    <div class="row row-cols-1 row-cols-sm-5 justify-content-evenly align-items-center">
+                        <div class="col col-lg-2 position-relative px-2">
                             <button class="btn w-100" type="button" data-bs-toggle="collapse" 
                             data-bs-target="#collapse_class" aria-expanded="false" aria-controls="collapse_class">
                                 Класс <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
                             </button>
                             <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_class">
                                 <div class="card p-1 mt-2 w-100 text-start">
-                                    {{ form.grades }}
+                                    <div class="card-body py-0">
+                                        <p>{{ form.grades }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col col-lg-3 position-relative px-2">
+                        <div class="col col-lg-2 position-relative px-2">
                             <button class="btn w-100" type="button" data-bs-toggle="collapse" 
                             data-bs-target="#collapse_subject" aria-expanded="false" aria-controls="collapse_subject">
                                 Предмет <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
                             </button>
                             <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_subject">
                                 <div class="card p-1 mt-2 w-100 text-start">
-                                    {{ form.subjects }}
+                                    <div class="card-body py-0">
+                                        <p>{{ form.subjects }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col col-lg-3 position-relative px-2">
+                        <div class="col col-lg-2 position-relative px-2">
                             <button class="btn w-100" type="button" data-bs-toggle="collapse" 
                             data-bs-target="#collapse_subject_type" aria-expanded="false" aria-controls="collapse_subject_type">
                                 Тип урока <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
                             </button>
                             <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_subject_type">
                                 <div class="card p-1 mt-2 w-100 text-start">
-                                    {{ form.types_lessons }}
+                                    <div class="card-body py-0">
+                                        <p>
+                                            {{ form.types_lessons }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col col-lg-2 position-relative px-2">
+                            <button class="btn w-100" type="button" data-bs-toggle="collapse" 
+                            data-bs-target="#collapse_date" aria-expanded="false" aria-controls="collapse_date">
+                                Дата добавления <img src="{% static "lesson_planner/images/down_arrow.svg" %}" alt="down">
+                            </button>
+                            <div class="collapse position-absolute w-100 m-0 z-3" id="collapse_date">
+                                <div class="card p-1 mt-2 w-100 text-start">
+                                    <div class="card-body py-0">
+                                        <p class="my-2">
+                                            С {{ form.date_from }}
+                                        </p>
+                                        <p class="my-2">
+                                            По {{ form.date_before }}
+                                        </p>
+
+                                    </div>
+                                   
                                 </div>
                             </div>
                         </div>
@@ -51,55 +80,58 @@
                 </div>
             </form>
         </div>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-5 py-5">
-        {% if lesson_plans %}
-        {% for lesson_plan in lesson_plans %}
-        <div class="col">
-            <div class="card h-100 shadow-sm border border-opacity-10 rounded-1">
-                <div class="card-header bg-white row row-cols-2 m-0 font-monospace">
-                    <div class="col text-start">{{ lesson_plan.subject.name }}</div>
-                    <div class="col text-end">{{ lesson_plan.grade.name }} класс</div>
-                </div>
-                <div class="card-body row row-cols-2 justify-content-between">
-                    <div class="col-10">
-                            <h5 class="card-title fw-bolder">
-                                <a href="{{ lesson_plan.get_absolute_url }}" class="link-underline link-underline-opacity-0">
-                                    {{ lesson_plan.topic }}
-                                </a>
-                            </h5>
-                        <p class="card-text">{{ lesson_plan.subject_type }}</p>
-                    </div>
-                    <div class="col-2 text-center d-flex flex-column align-items-center justify-content-center">
-                        <a href="{% url 'lesson_planner:update_lesson' lesson_plan.pk  %}"><img src="{% static 'lesson_planner/images/pencil-square.svg' %}" alt="Edit" class="icon my-2"></a>
-                        <form action="{% url 'lesson_planner:delete_lesson' lesson_plan.pk %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-sm p-0">
-                                <img src="{% static 'lesson_planner/images/trash3-fill.svg' %}" alt="Delete" class="icon my-2">
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                <div class="card-footer bg-white row row-cols-2 m-0 px-0 justify-content-between align-items-center">
+    {% endif  %}
+        {% if user.is_authenticated %}
+            {% if lesson_plans %}
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-5 py-5">
+                    {% for lesson_plan in lesson_plans %}
                     <div class="col">
-                        <small class="text-body-secondary font-monospace">📅 {{ lesson_plan.date_created|date:"d.m.Y" }}</small>
+                        <div class="card h-100 shadow-sm border border-opacity-10 rounded-1">
+                            <div class="card-header bg-white row row-cols-2 m-0 font-monospace">
+                                <div class="col text-start">{{ lesson_plan.subject.name }}</div>
+                                <div class="col text-end">{{ lesson_plan.grade.name }} класс</div>
+                            </div>
+                            <div class="card-body row row-cols-2 justify-content-between">
+                                <div class="col-10">
+                                        <h5 class="card-title fw-bolder">
+                                            <a href="{{ lesson_plan.get_absolute_url }}" class="link-underline link-underline-opacity-0">
+                                                {{ lesson_plan.topic }}
+                                            </a>
+                                        </h5>
+                                    <p class="card-text">{{ lesson_plan.subject_type }}</p>
+                                </div>
+                                <div class="col-2 text-center d-flex flex-column align-items-center justify-content-center">
+                                    <a href="{% url 'lesson_planner:update_lesson' lesson_plan.pk  %}"><img src="{% static 'lesson_planner/images/pencil-square.svg' %}" alt="Edit" class="icon my-2"></a>
+                                    <form action="{% url 'lesson_planner:delete_lesson' lesson_plan.pk %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm p-0">
+                                            <img src="{% static 'lesson_planner/images/trash3-fill.svg' %}" alt="Delete" class="icon my-2">
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-white row row-cols-2 m-0 px-0 justify-content-between align-items-center">
+                                <div class="col">
+                                    <small class="text-body-secondary font-monospace">📅 {{ lesson_plan.date_created|date:"d.m.Y" }}</small>
+                                </div>
+                                <div class="col text-end">
+                                    {% if lesson_plan.plan_file %}
+                                    <a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать</a>
+                                    {% else %}
+                                    <span class="text-muted small">Файл не прикреплён</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col text-end">
-                        {% if lesson_plan.plan_file %}
-                        <a href="{{ lesson_plan.plan_file.url }}" class="btn_download btn btn-sm">Скачать</a>
-                        {% else %}
-                        <span class="text-muted small">Файл не прикреплён</span>
-                        {% endif %}
-                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-        </div>
-        {% endfor %}
+            {% else %}
+                <h3 class="text-center py-3">Нет планов уроков</h3>
+            {% endif %}
         {% else %}
-        <div class="col text-center">
-            <h3>Нет планов уроков!</h3>
-        </div>
+            <h3 class="text-center py-3">Чтобы посмотреть уроки аторизируйтесь</h3>
         {% endif %}
-    </div>
 </div>
 {% if is_paginated %}
 <div class="container px-5">

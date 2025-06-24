@@ -1,10 +1,12 @@
 from django.db import models
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 
 class Subject(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name='Название предмета',
+    name = models.CharField(max_length=100, verbose_name='Название предмета',
                             help_text="Ведите название предмета")
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="Автор")
+
 
     class Meta:
         verbose_name = "Предмет"
@@ -16,7 +18,8 @@ class Subject(models.Model):
 
 
 class LessonType(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name="Тип урока")
+    name = models.CharField(max_length=100, verbose_name="Тип урока")
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="Автор", blank=True, null=True)
 
     class Meta:
         verbose_name = "Тип урока"
@@ -24,7 +27,7 @@ class LessonType(models.Model):
         ordering = ['name']
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
 
 class LessonStepTemplate(models.Model):
@@ -33,6 +36,7 @@ class LessonStepTemplate(models.Model):
     order = models.PositiveIntegerField(verbose_name="Порядок", help_text="Введите порядковый номер этапа")
     object_step = models.Manager()
     DoesNotExist = models.Manager
+
 
     class Meta:
         verbose_name = "Этап шаблона"
@@ -63,7 +67,7 @@ class Teacher(models.Model):
 
 
 class Grade(models.Model):
-    name = models.CharField(max_length=10, unique=True, verbose_name="Класс")
+    name = models.CharField(max_length=10, verbose_name="Класс")
 
     class Meta:
         verbose_name = "Класс"
@@ -91,6 +95,7 @@ class LessonPlan(models.Model):
                                      verbose_name="Тип урока", help_text="Выберите тип урока")
     grade = models.ForeignKey(to=Grade, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Класс', help_text="Выберите класс")
     topic = models.CharField(max_length=300, verbose_name="Тема", help_text="Введите тему урока")
+    creator = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="Автор")
     goal = models.TextField(blank=True, verbose_name="Цель", help_text="Введите цель урока")
     date_created = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")

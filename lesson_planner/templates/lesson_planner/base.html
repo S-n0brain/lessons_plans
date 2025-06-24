@@ -56,10 +56,12 @@
                         Предметы
                     </button>
                     <ul class="dropdown-menu">
-                        {% for subject in subjects %}
-                            <li><span class="dropdown-item small" href="#">{{ subject.name }}</span></li>
-                        {% endfor %}
-                        <li><hr class="dropdown-divider"></li>
+                        {% if user.is_authenticated %}
+                            {% for subject in subjects %}
+                                <li><span class="dropdown-item small" href="#">{{ subject.name }}</span></li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider"></li>
+                        {% endif %}
                         <li><a class="dropdown-item dropdown-link" href="{% url 'lesson_planner:subjects_list' %}">Редактировать</a></li>
                     </ul>
                 </div>
@@ -70,10 +72,12 @@
                         Типы уроков
                     </button>
                     <ul class="dropdown-menu">
-                        {% for type_lesson in types_lessons %}
-                            <li><span class="dropdown-item small" href="#">{{ type_lesson.name }}</span></li>
-                        {% endfor %}
-                        <li><hr class="dropdown-divider"></li>
+                        {% if user.is_authenticated %}
+                            {% for type_lesson in types_lessons %}
+                                <li><span class="dropdown-item small" href="#">{{ type_lesson.name }}</span></li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider"></li>
+                        {% endif %}
                         <li><a class="dropdown-item dropdown-link" href="{% url 'lesson_planner:subject_types_list' %}">Редактировать</a></li>
                     </ul>
                 </div>

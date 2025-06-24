@@ -12,6 +12,7 @@ from django.http.response import HttpResponseBadRequest
 import os.path
 from django.http import HttpRequest
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http.response import HttpResponseRedirect
 
 from docx.section import Section
 from docx import Document
@@ -168,20 +169,28 @@ class LessonPlanListView(ListView):
         context["form"] = LessonPlanFilterForm(self.request.GET)
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         queryset = super().get_queryset()
+        if self.request.user.is_authenticated:
+            queryset = queryset.filter(creator=self.request.user)
         form = LessonPlanFilterForm(self.request.GET)
         subjects = grades = types_lessons = None
         if form.is_valid():
             subjects = form.cleaned_data.get("subjects")
             grades = form.cleaned_data.get("grades")
             types_lessons = form.cleaned_data.get("types_lessons")
+            date_from = form.cleaned_data.get("date_from")
+            date_before = form.cleaned_data.get("date_before")
         if subjects:
             queryset = queryset.filter(subject__in=subjects)
         if grades:
             queryset = queryset.filter(grade__in=grades)
         if types_lessons:
             queryset = queryset.filter(subject_type__in=types_lessons)
+        if date_from:
+            queryset = queryset.filter(date_created__gte=date_from)
+        if date_before:
+            queryset = queryset.filter(date_created__lte=date_before)
         return queryset
 
 
@@ -230,6 +239,10 @@ class LessonPlanCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("lesson_planner:index")
     form_class = LessonPlanModelForm
 
+    def form_valid(self, form: LessonPlanModelForm) -> HttpResponseRedirect:
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
+
 
 class LessonPlanDeleteView(LoginRequiredMixin, DeleteView):
     model = LessonPlan
@@ -275,9 +288,16 @@ class SubjectListView(FormMixin, LoginRequiredMixin, ListView):
         else:
             form = SubjectModelForm(request.POST)
         if form.is_valid():
-            form.save()
+            subject = form.save(commit=False)
+            subject.creator = request.user
+            subject.save()
             return redirect(request.path)
         return self.get(request, args, kwargs)
+
+    def get_queryset(self) -> QuerySet:
+        queryset = super().get_queryset()
+        queryset = queryset.filter(creator=self.request.user)
+        return queryset
 
 
 class SubjectDeleteView(LoginRequiredMixin, DeleteView):
@@ -285,7 +305,7 @@ class SubjectDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("lesson_planner:subjects_list")
 
 
-class SubjectTypeListView(FormMixin, LoginRequiredMixin,  ListView):
+class SubjectTypeListView(FormMixin, LoginRequiredMixin, ListView):
     model = LessonType
     context_object_name = "subject_types"
     form_class = SubjectTypeModelForm
@@ -307,9 +327,15 @@ class SubjectTypeListView(FormMixin, LoginRequiredMixin,  ListView):
         if subject_type_id == "add_type":
             form = SubjectTypeModelForm(request.POST)
             if form.is_valid():
-                form.save()
+                subject_type: LessonType = form.save(commit=False)
+                subject_type.creator = request.user
+                subject_type.save()
                 return redirect(request.path)
         return self.get(request, args, kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(creator=self.request.user)
 
 
 class SubjectTypeDeleteView(LoginRequiredMixin, DeleteView):
@@ -323,7 +349,13 @@ class LessonStepTemplateListView(FormMixin, LoginRequiredMixin, ListView):
     form_class = LessonStepTemplateModelForm
 
     def get_queryset(self) -> QuerySet:
-        return LessonStepTemplate.object_step.filter(lesson_type_id=self.kwargs["pk"])
+        # queryset = super().get_queryset()
+        # filters = {
+        #     LessonStepTemplate.lesson_type_id: self.kwargs["pk"],
+        #     LessonStepTemplate.lesson_type: self.request.user
+        # }
+        # queryset = queryset.filter(filters)
+        return LessonStepTemplate.object_step.filter(lesson_type_id=self.kwargs["pk"]) # lesson_type_id=self.kwargs["pk"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

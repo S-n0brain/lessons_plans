@@ -6,7 +6,7 @@ from .models import LessonPlan, Subject, LessonType, LessonStepTemplate, Grade
 class LessonPlanModelForm(forms.ModelForm):
     class Meta:
         model = LessonPlan
-        fields = "__all__"
+        exclude = ["creator"]
         widgets = {
             "subject": forms.Select(attrs={"class": "form-control form-select"}),
             "subject_type": forms.Select(attrs={"class": "form-control"}),
@@ -35,16 +35,17 @@ class LessonPlanFileUploadForm(LessonPlanModelForm):
 class SubjectModelForm(forms.ModelForm):
     class Meta:
         model = Subject
-        fields = '__all__'
+        fields = ['name']
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "id": "field_rename",
                                            "aria-labelledby": "help_for_field"})
         }
 
+
 class SubjectTypeModelForm(forms.ModelForm):
     class Meta:
         model = LessonType
-        fields = "__all__"
+        fields = ["name"]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control", "id": "field_add",
                                            "aria-labelledby": "help_for_field"})
@@ -59,7 +60,7 @@ class LessonStepTemplateModelForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"class": "form-control", "id": "field_add_step",
                                            "aria-labelledby": "help_for_field"}),
             "order": forms.NumberInput(attrs={"class": "form-control", "id": "field_add",
-                                           "aria-labelledby": "help_for_field"})
+                                              "aria-labelledby": "help_for_field"})
         }
 
 
@@ -79,10 +80,18 @@ class LessonPlanFilterForm(forms.Form):
                                               label="Предмет",
                                               widget=forms.CheckboxSelectMultiple)
     grades = forms.ModelMultipleChoiceField(queryset=Grade.objects.all(),
-                                              required=False,
-                                              label="Класс",
-                                              widget=forms.CheckboxSelectMultiple)
-    types_lessons = forms.ModelMultipleChoiceField(queryset=LessonType.objects.all(),
                                             required=False,
-                                            label="Тип урока",
+                                            label="Класс",
                                             widget=forms.CheckboxSelectMultiple)
+    types_lessons = forms.ModelMultipleChoiceField(queryset=LessonType.objects.all(),
+                                                   required=False,
+                                                   label="Тип урока",
+                                                   widget=forms.CheckboxSelectMultiple)
+    date_from = forms.DateField( required=False,
+                                 label="Создан после",
+                                 widget=forms.DateInput(attrs={"type": "date", "class": "form-control d-inline w-75"})
+    )
+    date_before = forms.DateField(required=False,
+                              label="Создан до",
+                              widget=forms.DateInput(attrs={"type": "date", "class": "form-control d-inline w-75"})
+    )
